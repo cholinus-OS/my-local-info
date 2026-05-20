@@ -1,0 +1,55 @@
+name: Daily Data Update & AI Writing
+
+on:
+  schedule:
+    # 매일 아침 7시 (한국시간 KST) = UTC 시간으로 전날 밤 10시 (22시)
+    - cron: '0 22 * * *'
+  workflow_dispatch: # 깃허브에서 수동으로도 원클릭 실행할 수 있게 설정합니다.
+
+jobs:
+  update-and-deploy:
+    runs-on: ubuntu-latest
+
+    permissions:
+      # 커밋을 푸시하기 위해 쓰기 권한이 필요합니다.
+      contents: write
+
+    steps:
+      # 1. 깃허브 저장소 코드 가져오기
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      # 2. Node.js 환경 세팅하기
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      # 3. 프로젝트 필요 패키지 설치
+      - name: Install Dependencies
+        run: npm ci
+
+      # 4. 데이터 수집 및 AI 글쓰기 스크립트 작동
+      - name: Run Update Script
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          PUBLIC_DATA_API_KEY: ${{ secrets.PUBLIC_DATA_API_KEY }}
+        run: node scripts/update-data.js
+
+      # 5. 변경된 데이터 파일을 다시 깃허브에 커밋 & 푸시
+      - name: Commit & Push Changes
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          
+          # 변경사항 감지 후 커밋
+          git add public/data/local-info.json public/data/blog.json
+          
+          # 변경사항이 있는 경우에만 커밋 진행 (에러 방지)
+          if ! git diff --cached --quiet; then
+            git commit -m "Auto-update: 최신 생활 정보 및 AI 블로그 글 갱신 [skip ci]"
+            git push
+          else
+            echo "변경 사항이 없어 푸시를 생략합니다."
+          fi
