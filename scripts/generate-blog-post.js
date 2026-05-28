@@ -23,6 +23,20 @@ async function run() {
   }
 
   // [1단계] 최신 데이터 확인
+  const postsDir = path.join(process.cwd(), 'src/content/posts');
+
+  // 특정 아이템이 이미 작성되었는지 검사하는 헬퍼 함수
+  function isAlreadyWritten(item) {
+    if (!item) return false;
+    if (!fs.existsSync(postsDir)) return false;
+    const files = fs.readdirSync(postsDir);
+    return files.some(file => {
+      if (!file.endsWith('.md')) return false;
+      const fileContent = fs.readFileSync(path.join(postsDir, file), 'utf-8');
+      return fileContent.includes(item.name);
+    });
+  }
+
   const lastEvent = localInfo.events && localInfo.events.length > 0 
     ? localInfo.events[localInfo.events.length - 1] 
     : null;
@@ -37,10 +51,23 @@ async function run() {
   };
 
   let latestItem = null;
-  if (lastEvent && lastBenefit) {
+  const eventWritten = isAlreadyWritten(lastEvent);
+  const benefitWritten = isAlreadyWritten(lastBenefit);
+
+  if (lastEvent && !eventWritten && lastBenefit && !benefitWritten) {
+    // 둘 다 아직 안 쓰여졌다면 ID 숫자가 더 큰 최신 것을 선택
     latestItem = getNum(lastEvent) >= getNum(lastBenefit) ? lastEvent : lastBenefit;
+  } else if (lastEvent && !eventWritten) {
+    latestItem = lastEvent;
+  } else if (lastBenefit && !benefitWritten) {
+    latestItem = lastBenefit;
   } else {
-    latestItem = lastEvent || lastBenefit;
+    // 둘 다 쓰여졌다면 기본 최신 비교를 타겟으로 (이후 조기종료 처리됨)
+    if (lastEvent && lastBenefit) {
+      latestItem = getNum(lastEvent) >= getNum(lastBenefit) ? lastEvent : lastBenefit;
+    } else {
+      latestItem = lastEvent || lastBenefit;
+    }
   }
 
   if (!latestItem) {
@@ -48,19 +75,9 @@ async function run() {
     return;
   }
 
-  const postsDir = path.join(process.cwd(), 'src/content/posts');
-  if (fs.existsSync(postsDir)) {
-    const files = fs.readdirSync(postsDir);
-    for (const file of files) {
-      if (file.endsWith('.md')) {
-        const fileContent = fs.readFileSync(path.join(postsDir, file), 'utf-8');
-        // 제목이나 요약, 본문에 이미 해당 서비스명이 포함되어 있으면 중복으로 판단
-        if (fileContent.includes(latestItem.name)) {
-          console.log("이미 작성된 글입니다");
-          return;
-        }
-      }
-    }
+  if (isAlreadyWritten(latestItem)) {
+    console.log("이미 작성된 글입니다");
+    return;
   }
 
   try {
