@@ -80,6 +80,12 @@ export default function Home() {
                 지원금·혜택
               </a>
               <Link
+                href="/about"
+                className="rounded-lg px-3 py-1.5 text-xs font-semibold text-zinc-600 transition-colors hover:bg-amber-100/50 sm:text-sm"
+              >
+                소개
+              </Link>
+              <Link
                 href="/blog"
                 className="rounded-lg px-3 py-1.5 text-xs font-bold text-amber-600 bg-amber-50 hover:bg-amber-100 transition-colors sm:text-sm"
               >
@@ -123,68 +129,93 @@ export default function Home() {
           </div>
 
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {events.map((event) => (
-              <article
-                key={event.id}
-                className="group flex flex-col justify-between overflow-hidden rounded-2xl border border-amber-100 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-md hover:border-amber-200"
-              >
-                <div className="p-6">
-                  {/* 카테고리 태그 */}
-                  <div className="flex items-center justify-between">
-                    <span className="inline-flex items-center rounded-md bg-amber-50 px-2 py-1 text-xs font-semibold text-amber-700 ring-1 ring-inset ring-amber-600/10">
-                      {event.category}
-                    </span>
-                    <span className="text-xs text-zinc-400">
-                      {event.startDate === event.endDate
-                        ? event.startDate
-                        : `${event.startDate} ~ ${event.endDate}`}
-                    </span>
+            {events.map((event) => {
+              const eventSchema = {
+                "@context": "https://schema.org",
+                "@type": "Event",
+                "name": event.name,
+                "startDate": event.startDate,
+                "endDate": event.endDate,
+                "eventAttendanceMode": "https://schema.org/OfflineEventAttendanceMode",
+                "eventStatus": "https://schema.org/EventScheduled",
+                "location": {
+                  "@type": "Place",
+                  "name": event.location,
+                  "address": {
+                    "@type": "PostalAddress",
+                    "addressLocality": "성남시",
+                    "addressRegion": "경기도"
+                  }
+                },
+                "description": event.summary
+              };
+              return (
+                <article
+                  key={event.id}
+                  className="group flex flex-col justify-between overflow-hidden rounded-2xl border border-amber-100 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-md hover:border-amber-200"
+                >
+                  <script
+                    type="application/ld+json"
+                    dangerouslySetInnerHTML={{ __html: JSON.stringify(eventSchema) }}
+                  />
+                  <div className="p-6">
+                    {/* 카테고리 태그 */}
+                    <div className="flex items-center justify-between">
+                      <span className="inline-flex items-center rounded-md bg-amber-50 px-2 py-1 text-xs font-semibold text-amber-700 ring-1 ring-inset ring-amber-600/10">
+                        {event.category}
+                      </span>
+                      <span className="text-xs text-zinc-400">
+                        {event.startDate === event.endDate
+                          ? event.startDate
+                          : `${event.startDate} ~ ${event.endDate}`}
+                      </span>
+                    </div>
+
+                    <h4 className="mt-4 text-lg font-bold text-zinc-900 group-hover:text-amber-700 transition-colors">
+                      {event.name}
+                    </h4>
+                    
+                    <p className="mt-3 line-clamp-3 text-sm leading-relaxed text-zinc-600">
+                      {event.summary}
+                    </p>
+
+                    <div className="mt-6 space-y-2 border-t border-zinc-50 pt-4 text-xs text-zinc-500">
+                      <div className="flex items-center space-x-2">
+                        <span className="font-semibold text-zinc-700 w-12 shrink-0">📍 장소</span>
+                        <span className="truncate">{event.location}</span>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <span className="font-semibold text-zinc-700 w-12 shrink-0">👥 대상</span>
+                        <span className="truncate">{event.target}</span>
+                      </div>
+                    </div>
                   </div>
 
-                  <h4 className="mt-4 text-lg font-bold text-zinc-900 group-hover:text-amber-700 transition-colors">
-                    {event.name}
-                  </h4>
-                  
-                  <p className="mt-3 line-clamp-3 text-sm leading-relaxed text-zinc-600">
-                    {event.summary}
-                  </p>
-
-                  <div className="mt-6 space-y-2 border-t border-zinc-50 pt-4 text-xs text-zinc-500">
-                    <div className="flex items-center space-x-2">
-                      <span className="font-semibold text-zinc-700 w-12 shrink-0">📍 장소</span>
-                      <span className="truncate">{event.location}</span>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <span className="font-semibold text-zinc-700 w-12 shrink-0">👥 대상</span>
-                      <span className="truncate">{event.target}</span>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="bg-zinc-50/50 p-4 border-t border-zinc-100">
-                  <Link
-                    href="/blog"
-                    className="flex w-full items-center justify-center rounded-xl bg-white border border-amber-200/80 px-4 py-2 text-xs font-semibold text-amber-900 shadow-sm transition-all hover:bg-amber-50 hover:text-amber-700"
-                  >
-                    자세히 보기
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      strokeWidth={2}
-                      stroke="currentColor"
-                      className="ml-1.5 h-3.5 w-3.5"
+                  <div className="bg-zinc-50/50 p-4 border-t border-zinc-100">
+                    <Link
+                      href="/blog"
+                      className="flex w-full items-center justify-center rounded-xl bg-white border border-amber-200/80 px-4 py-2 text-xs font-semibold text-amber-900 shadow-sm transition-all hover:bg-amber-50 hover:text-amber-700"
                     >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"
-                      />
-                    </svg>
-                  </Link>
-                </div>
-              </article>
-            ))}
+                      자세히 보기
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        strokeWidth={2}
+                        stroke="currentColor"
+                        className="ml-1.5 h-3.5 w-3.5"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"
+                        />
+                      </svg>
+                    </Link>
+                  </div>
+                </article>
+              );
+            })}
           </div>
         </section>
 
@@ -203,64 +234,80 @@ export default function Home() {
           </div>
 
           <div className="grid gap-6 sm:grid-cols-2">
-            {benefits.map((benefit) => (
-              <article
-                key={benefit.id}
-                className="group flex flex-col justify-between overflow-hidden rounded-2xl border border-orange-100 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-md hover:border-orange-200"
-              >
-                <div className="p-6">
-                  {/* 카테고리 태그 */}
-                  <div className="flex items-center justify-between">
-                    <span className="inline-flex items-center rounded-md bg-orange-50 px-2 py-1 text-xs font-semibold text-orange-700 ring-1 ring-inset ring-orange-600/10">
-                      {benefit.category}
-                    </span>
-                    <span className="text-xs text-zinc-400">상시지원</span>
+            {benefits.map((benefit) => {
+              const benefitSchema = {
+                "@context": "https://schema.org",
+                "@type": "GovernmentService",
+                "name": benefit.name,
+                "description": benefit.summary,
+                "provider": {
+                  "@type": "GovernmentOrganization",
+                  "name": benefit.location
+                }
+              };
+              return (
+                <article
+                  key={benefit.id}
+                  className="group flex flex-col justify-between overflow-hidden rounded-2xl border border-orange-100 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-md hover:border-orange-200"
+                >
+                  <script
+                    type="application/ld+json"
+                    dangerouslySetInnerHTML={{ __html: JSON.stringify(benefitSchema) }}
+                  />
+                  <div className="p-6">
+                    {/* 카테고리 태그 */}
+                    <div className="flex items-center justify-between">
+                      <span className="inline-flex items-center rounded-md bg-orange-50 px-2 py-1 text-xs font-semibold text-orange-700 ring-1 ring-inset ring-orange-600/10">
+                        {benefit.category}
+                      </span>
+                      <span className="text-xs text-zinc-400">상시지원</span>
+                    </div>
+
+                    <h4 className="mt-4 text-lg font-bold text-zinc-900 group-hover:text-orange-700 transition-colors">
+                      {benefit.name}
+                    </h4>
+                    
+                    <p className="mt-3 line-clamp-3 text-sm leading-relaxed text-zinc-600">
+                      {benefit.summary}
+                    </p>
+
+                    <div className="mt-6 space-y-2 border-t border-zinc-50 pt-4 text-xs text-zinc-500">
+                      <div className="flex items-center space-x-2">
+                        <span className="font-semibold text-zinc-700 w-12 shrink-0">👥 대상</span>
+                        <span className="truncate">{benefit.target}</span>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <span className="font-semibold text-zinc-700 w-12 shrink-0">🏢 신청처</span>
+                        <span className="truncate">{benefit.location}</span>
+                      </div>
+                    </div>
                   </div>
 
-                  <h4 className="mt-4 text-lg font-bold text-zinc-900 group-hover:text-orange-700 transition-colors">
-                    {benefit.name}
-                  </h4>
-                  
-                  <p className="mt-3 line-clamp-3 text-sm leading-relaxed text-zinc-600">
-                    {benefit.summary}
-                  </p>
-
-                  <div className="mt-6 space-y-2 border-t border-zinc-50 pt-4 text-xs text-zinc-500">
-                    <div className="flex items-center space-x-2">
-                      <span className="font-semibold text-zinc-700 w-12 shrink-0">👥 대상</span>
-                      <span className="truncate">{benefit.target}</span>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <span className="font-semibold text-zinc-700 w-12 shrink-0">🏢 신청처</span>
-                      <span className="truncate">{benefit.location}</span>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="bg-zinc-50/50 p-4 border-t border-zinc-100">
-                  <Link
-                    href="/blog"
-                    className="flex w-full items-center justify-center rounded-xl bg-white border border-orange-200/80 px-4 py-2 text-xs font-semibold text-orange-950 shadow-sm transition-all hover:bg-orange-50 hover:text-orange-700"
-                  >
-                    자세히 보기
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      strokeWidth={2}
-                      stroke="currentColor"
-                      className="ml-1.5 h-3.5 w-3.5"
+                  <div className="bg-zinc-50/50 p-4 border-t border-zinc-100">
+                    <Link
+                      href="/blog"
+                      className="flex w-full items-center justify-center rounded-xl bg-white border border-orange-200/80 px-4 py-2 text-xs font-semibold text-orange-950 shadow-sm transition-all hover:bg-orange-50 hover:text-orange-700"
                     >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"
-                      />
-                    </svg>
-                  </Link>
-                </div>
-              </article>
-            ))}
+                      자세히 보기
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        strokeWidth={2}
+                        stroke="currentColor"
+                        className="ml-1.5 h-3.5 w-3.5"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"
+                        />
+                      </svg>
+                    </Link>
+                  </div>
+                </article>
+              );
+            })}
           </div>
         </section>
 

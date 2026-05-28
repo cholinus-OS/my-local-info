@@ -50,6 +50,12 @@ export default function BlogListPage() {
                 홈으로
               </Link>
               <Link
+                href="/about"
+                className="rounded-lg px-3 py-1.5 text-xs font-semibold text-zinc-600 transition-colors hover:bg-amber-100/50 sm:text-sm"
+              >
+                소개
+              </Link>
+              <Link
                 href="/blog"
                 className="rounded-lg px-3 py-1.5 text-xs font-bold text-amber-600 bg-amber-50 hover:bg-amber-100 transition-colors sm:text-sm"
               >
