@@ -1,17 +1,5 @@
 {
   "events": [],
-  "benefits": [
-    {
-      "id": "benefit-1",
-      "name": "유아학비 (누리과정) 지원",
-      "category": "혜택",
-      "startDate": "2026-03-01",
-      "endDate": "2027-02-28",
-      "location": "복지로 온라인, 읍면동 주민센터",
-      "target": "국공립 및 사립유치원에 다니는 만 3~5세 유아 (저소득층 유아 추가 지원)",
-      "summary": "유치원에 다니는 만 3~5세 아동에게 유아학비 및 방과후과정비(국공립 월 10/5만원, 사립 월 28/7만원)를 지원하며, 저소득층 사립 유아에게 월 20만원을 추가 지원합니다.",
-      "originalLink": "https://www.gov.kr/portal/rcvfvrSvc/dtlEx/000000465790"
-    }
-  ],
+  "benefits": [],
   "lastUpdated": "2026-06-22"
 }
