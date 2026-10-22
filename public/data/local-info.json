@@ -1,17 +1,5 @@
 {
   "events": [],
-  "benefits": [
-    {
-      "id": "benefit-1",
-      "name": "근로·자녀장려금",
-      "category": "혜택",
-      "startDate": "2026-03-01",
-      "endDate": "2026-09-15",
-      "location": "관할 세무서",
-      "target": "소득과 재산이 일정 기준 이하인 근로소득, 사업소득 또는 종교인소득이 있는 가구",
-      "summary": "소득과 재산이 적은 근로소득자에게 근로장려금을, 자녀가 있을 경우 자녀장려금을 지급",
-      "originalLink": "https://www.gov.kr/portal/rcvfvrSvc/dtlEx/105100000001"
-    }
-  ],
-  "lastUpdated": "2026-10-21"
+  "benefits": [],
+  "lastUpdated": "2026-10-22"
 }
